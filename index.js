@@ -1,6 +1,11 @@
-const { GatewayIntentBits, Client, messageLink, ActivityType } = require("discord.js");
+const {
+  GatewayIntentBits,
+  Client,
+  messageLink,
+  ActivityType,
+} = require("discord.js");
 const axios = require("axios");
-const moment = require('moment');
+const moment = require("moment");
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -14,17 +19,22 @@ require("dotenv").config();
 
 const token = process.env.APP_TOKEN;
 
-client.on('ready', () => {
-    const timestamp = moment().subtract(69, 'minutes').toISOString();
-    client.user.setActivity('with your mom',{type: ActivityType.Playing,  timestamps: { start: timestamp }});
-})
+client.on("ready", () => {
+  const timestamp = moment().subtract(69, "minutes").toISOString();
+  client.user.setActivity("with your mom", {
+    type: ActivityType.Playing,
+    timestamps: { start: timestamp },
+  });
+});
 
 client.on("messageCreate", (msg) => {
   if (!msg.author.bot) {
     generateChatMessage(msg.content.toLocaleLowerCase()).then((message) => {
-      msg.reply({
-        content: message ?? "Error",
-      });
+      if (message) {
+        msg.reply({
+          content: message,
+        });
+      }
     });
   }
 });
@@ -37,6 +47,6 @@ async function generateChatMessage(message) {
       return gali[randomIndex];
 
     default:
-      return "Invalid selection.";
+      return null;
   }
 }
