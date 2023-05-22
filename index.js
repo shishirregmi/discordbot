@@ -14,6 +14,7 @@ const client = new Client({
   ],
 });
 const gali = require("./data");
+const nickname = require("./nickname");
 
 require("dotenv").config();
 
@@ -29,7 +30,7 @@ client.on("ready", () => {
 
 client.on("messageCreate", (msg) => {
   if (!msg.author.bot) {
-    generateChatMessage(msg.content.toLocaleLowerCase()).then((message) => {
+    generateChatMessage(msg.content.toLocaleLowerCase().split(' ')[0], msg.content.substr(msg.content.indexOf(" ") + 1)).then((message) => {
       if (message) {
         msg.reply({
           content: message,
@@ -40,12 +41,13 @@ client.on("messageCreate", (msg) => {
 });
 client.login(token);
 
-async function generateChatMessage(message) {
+async function generateChatMessage(message, values) {
   switch (message) {
     case "!gali":
       const randomIndex = Math.floor(Math.random() * gali.length);
       return gali[randomIndex];
-
+    case "!nickname":
+      return nickname(values)
     default:
       return null;
   }
